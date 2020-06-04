@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/basicAuth';
 
+mongodb+srv://AruneM:jusesatsudziai123.@cluster0-i4h6x.mongodb.net/AruneM?retryWrites=true&w=majority
+
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,

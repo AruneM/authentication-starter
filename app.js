@@ -17,6 +17,7 @@ require('./configs/db.config');
 
 // Routers
 const indexRouter = require('./routes/index.routes');
+const authRouter = require('./routes/auth.routes');
 
 const app = express();
 
@@ -32,6 +33,24 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 // Sets up morgan in our middleware so that we can see the requests getting logged
 app.use(logger('dev'));
 
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+ 
+app.use(session({
+    secret: 'secret-sudas',
+    saveUninitialized: false,
+    resave: true,
+    cookie: {
+      maxAge: 60*60*24*1000 //60 sec * 60min * 24hrs = 1day (in miliseconds)
+    },
+    store: new MongoStore({
+      url: process.env.MONGOD_URI,
+      //time to live (in seconds)
+      ttl: 60*60*24,
+      autoRemove: 'disabled'
+    })
+}));
+
 // a body parser to allow us to parse form submissions
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,5 +60,6 @@ app.use(cookieParser());
 
 // Routes middleware
 app.use('/', indexRouter);
+app.use('/', authRouter);
 
 module.exports = app;
